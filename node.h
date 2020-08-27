@@ -5,6 +5,7 @@
 #include "configure.h"
 #include <QFrame>
 #include <QDebug>
+#include <QJsonArray>
 
 class Node : public QWidget
 {
@@ -13,14 +14,10 @@ public:
     explicit Node(Pos pos, QString styleSheet, QWidget *parent = nullptr);
     void draw();
     void move(Pos newPos);
-    Pos getPos(){
-        return pos;
-    }
-    void remove(){
-        delete frame;
-    }
-
-
+    Pos getPos();
+    void remove();
+    QJsonArray jsonPos();
+    void fromJson(QJsonArray array);
 private:
         QString styleSheet;
         Pos pos;
@@ -30,8 +27,18 @@ signals:
 };
 
 class SnakeNode: public Node{
+    using Node::Node;
+};
+
+class SnakeHeadNode: public SnakeNode{
 public:
-    SnakeNode(Pos pos, QWidget *parent = nullptr): Node(pos, QString("background-color: black"), parent){
+    SnakeHeadNode(Pos pos, QWidget *parent = nullptr): SnakeNode(pos, QString("background-color: blue; border: 1px solid white"), parent){
+    };
+};
+
+class SnakeBodyNode: public SnakeNode{
+public:
+    SnakeBodyNode(Pos pos, QWidget *parent = nullptr): SnakeNode(pos, QString("background-color: green; border: 1px solid white"), parent){
     };
 };
 

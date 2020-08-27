@@ -8,13 +8,14 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    controller = new Controller(this);
     ui->setupUi(this);
     this->setFixedSize(1000,850);
-    Map* main_map = new Map(this);
-    map = main_map;
-    controller = new Controller(map, this);
+    this->setWindowTitle("贪吃蛇");
     controller->setButton(ui->start, ui->continue_2,ui->load, ui->restart,ui->pause, ui->save, ui->quit);
-    controller->setButtonStatus();
+    controller->setAction(ui->start_2, ui->continue_action, ui->load_action, ui->restart_action, ui->pause_action, ui->save_action, ui->quit_action);
+    controller->setOthers(ui->time, ui->score,ui->speed_slider);
+    controller->setStatus();
     this->setFocusPolicy(Qt::TabFocus);
 }
 
@@ -23,6 +24,16 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event){
+    controller->receiveKeyPress(event);
+}
+
+void MainWindow::mousePressEvent(QMouseEvent* e){
+    QPointF point = e->localPos();
+    int x = point.toPoint().x();
+    int y = point.toPoint().y();
+    emit newWall(x, y);
+}
 
 void MainWindow::on_start_clicked()
 {
@@ -72,4 +83,29 @@ void MainWindow::on_restart_action_triggered()
 void MainWindow::on_quit_action_triggered()
 {
     exit(1);
+}
+
+void MainWindow::on_save_clicked()
+{
+    controller->save();
+}
+
+void MainWindow::on_load_clicked()
+{
+    controller->load();
+}
+
+void MainWindow::on_horizontalSlider_valueChanged(int value)
+{
+    controller->changeSpeed(value);
+}
+
+void MainWindow::on_save_action_triggered()
+{
+    controller->save();
+}
+
+void MainWindow::on_load_action_triggered()
+{
+    controller->load();
 }

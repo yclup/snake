@@ -21,20 +21,11 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    Map* map;
     Controller* controller;
 
 protected:
-    void keyPressEvent(QKeyEvent *event) override{
-        map->receiveKeyPress(event);
-    }
-
-    void mousePressEvent(QMouseEvent* e) override{
-        QPointF point = e->localPos();
-        int x = point.toPoint().x();
-        int y = point.toPoint().y();
-        emit newWall(x, y);
-    }
+    void keyPressEvent(QKeyEvent *event) override;
+    void mousePressEvent(QMouseEvent* e) override;
 
 signals:
     void newWall(int x, int y);
@@ -50,5 +41,10 @@ private slots:
     void on_continue_action_triggered();
     void on_restart_action_triggered();
     void on_quit_action_triggered();
+    void on_save_clicked();
+    void on_load_clicked();
+    void on_horizontalSlider_valueChanged(int value);
+    void on_save_action_triggered();
+    void on_load_action_triggered();
 };
 #endif // MAINWINDOW_H

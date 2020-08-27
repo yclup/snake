@@ -3,9 +3,20 @@
 
 #include <QWidget>
 #include <QTimer>
+#include <QAction>
+#include <QLCDNumber>
+#include <QFileDialog>
+#include <QSlider>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonParseError>
+#include <QJsonValue>
 #include "map.h"
 #include "configure.h"
 #include <QPushButton>
+#include <QMessageBox>
+#include <QtMath>
 
 class Controller : public QWidget
 {
@@ -21,86 +32,50 @@ class Controller : public QWidget
     QPushButton* save_btn;
     QPushButton* exit_btn;
 
-    void setEnabled(bool a, bool b, bool c, bool d, bool e, bool f, bool g){
-        start_btn->setEnabled(a);
-        continue_btn->setEnabled(b);
-        load_btn->setEnabled(c);
-        restart_btn->setEnabled(d);
-        pause_btn->setEnabled(e);
-        save_btn->setEnabled(f);
-        exit_btn->setEnabled(g);
-    }
+    QAction* start_action;
+    QAction* continue_action;
+    QAction* load_action;
+    QAction* restart_action;
+    QAction* pause_action;
+    QAction* save_action;
+    QAction* exit_action;
+
+    QLCDNumber* time;
+    QLCDNumber* score;
+
+    QSlider* speed_slider;
+
+    int time_val;
+    int score_val;
+
+    bool key_pressed;
+    int interval = 100;
+
+    void setEnabled(bool a, bool b, bool c, bool d, bool e, bool f, bool g);
 
 
 
 public:
-    void setButtonStatus(){
-        if(status == before_start){
-            setEnabled(true, false, true, false, false, false, true);
-        }
-        else if(status == active){
-            setEnabled(false, false, false, false, true, false, true);
-        }
-        else if(status == paused){
-            setEnabled(false, true, false, true, false, true, true);
-        }
-        else if(status == finished){
-            setEnabled(false, false, false, true, false, false, true);
-        }
-    }
+    explicit Controller(QWidget *parent = nullptr);
 
-    void setButton(QPushButton* start, QPushButton* _continue_btn, QPushButton* load, QPushButton* restart, QPushButton* pause, QPushButton* save, QPushButton* exit){
-        start_btn = start;
-        continue_btn = _continue_btn;
-        load_btn = load;
-        restart_btn = restart;
-        pause_btn = pause;
-        save_btn = save;
-        exit_btn = exit;
-    }
+    void save();
+    void load();
+    void receiveKeyPress(QKeyEvent* event);
+    void setStatus();
+    void setButton(QPushButton* start, QPushButton* _continue_btn, QPushButton* load, QPushButton* restart, QPushButton* pause, QPushButton* save, QPushButton* exit);
+    void setAction(QAction* start, QAction* _continue, QAction* load, QAction* restart, QAction* pause, QAction* save, QAction* exit);
+    void setOthers(QLCDNumber* time_lcd, QLCDNumber* score_lcd, QSlider* slider);
+    void start();
+    void reset();
+    void pause();
+    void restart();
+    void changeSpeed(int val);
 
-    explicit Controller( Map* _map, QWidget *parent = nullptr);
-
-    void start(){
-        timer.start(100);
-        status = active;
-        setButtonStatus();
-    }
-
-    void reset(){
-        status = before_start;
-        map->reset();
-        setButtonStatus();
-    }
 public slots:
-    void update(){
-        map->update();
-    }
-
-    void end(){
-        timer.stop();
-        status = finished;
-        setButtonStatus();
-    }
-
-    void pause(){
-
-            timer.stop();
-            status = paused;
-            setButtonStatus();
-    }
-
-    void restart(){
-
-            timer.start();
-            status = active;
-            setButtonStatus();
-    }
-
-    void newWall(int x, int y){
-        if(status == before_start)
-        map->getWall()->newWall(x, y);
-    }
+    void eatFood();
+    void update();
+    void end();
+    void newWall(int x, int y);
 signals:
 
 };

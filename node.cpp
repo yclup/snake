@@ -17,5 +17,22 @@ void Node::move(Pos newPos){
     pos = newPos;
 }
 
+Pos Node::getPos(){
+    return pos;
+}
+void Node::remove(){
+    delete frame;
+}
+
+QJsonArray Node::jsonPos(){
+    QJsonArray array;
+    array.append(pos.x);
+    array.append(pos.y);
+    return array;
+}
+
+void Node::fromJson(QJsonArray array){
+    pos = Pos(array[0].toInt(), array[1].toInt());
+}
 
 

@@ -30,7 +30,7 @@ const int MAP_WIDTH = 40;
 const int MAP_HEIGHT = 40;
 const int X_OFFSET = 0;
 const int Y_OFFSET = 50;
-const Direction INITIAL_DIRECTION = right_dir;
+const Direction INITIAL_DIRECTION = down_dir;
 
 
 #endif // CONFIGURE_H
